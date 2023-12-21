@@ -13,10 +13,10 @@
         android:theme="@style/Theme.MemeApp"
         tools:targetApi="33">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="true"
             android:label="@string/title_activity_main"
-            android:theme="@style/Theme.MemeApp">
+            android:theme="@style/Theme.MemeApp.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
