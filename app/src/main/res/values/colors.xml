@@ -5,6 +5,20 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+
+
+    <color name="pepe_green_1">#598e3e</color>
+    <color name="pepe_green_2">#488201</color>
+
+    <color name="pepe_blue_1">#0442ef</color>
+    <color name="pepe_blue_2">#0442ef</color>
+
+    <color name="black_1">#010208</color> <!-- Black Pearl -->
+    <color name="black_2">#020103</color> <!-- Victorian Black -->
+
+    <color name="white_1">#FFFFFF</color>
+    <color name="white_2">#f5fff5</color>
+
+    <color name="gray_1">#d1d1d1</color>
+
 </resources>

@@ -9,17 +9,24 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/tab_menu_height"
+            android:background="?attr/colorPrimaryVariant"
+            app:tabIndicatorColor="@color/white_1"
             app:tabGravity="fill"
-            app:tabIndicatorColor="@android:color/white"
-            app:tabIndicatorHeight="4dp"
+            app:tabIndicatorHeight="8dp"
             app:tabMode="scrollable"
-            app:tabTextColor="@android:color/white" />
+            app:tabTextColor="@android:color/white"
+            app:tabBackground="@drawable/circle"
+            app:tabMaxWidth="@dimen/bubble_size"
+            app:tabMinWidth="@dimen/bubble_size"
+            app:tabIndicator="@drawable/tab_indicator"
+            />
 
     </com.google.android.material.appbar.AppBarLayout>
 

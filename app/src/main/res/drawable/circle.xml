@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="?attr/colorPrimary"/>
+    <corners android:radius="@dimen/bubble_size"/>
+    <padding
+        android:bottom="4dip"
+        android:left="0dip"
+        android:right="0dip"
+        android:top="0dip"/>
+    <stroke
+        android:width="4dp"
+        android:color="?attr/colorPrimaryVariant" />
+    <size
+        android:height="@dimen/bubble_size"
+        android:width="@dimen/bubble_size"/>
+
+</shape>

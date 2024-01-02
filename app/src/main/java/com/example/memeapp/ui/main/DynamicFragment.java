@@ -2,6 +2,7 @@ package com.example.memeapp.ui.main;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +12,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.memeapp.R;
+import com.example.memeapp.SharedPreferencesManager;
+import com.example.memeapp.model.Tag.Tag;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class DynamicFragment extends Fragment {
+    SharedPreferencesManager sp;
 
     public static DynamicFragment newInstance() {
         return new DynamicFragment();
@@ -22,12 +29,14 @@ public class DynamicFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sp = SharedPreferencesManager.getInstance(getContext());
     }
 
     // adding the layout with inflater
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_dynamic, container, false);
         initViews(view);
         return view;
@@ -35,13 +44,7 @@ public class DynamicFragment extends Fragment {
 
     // initialise the categories
     private void initViews(View view) {
-        TextView textView = view.findViewById(R.id.commonTextView);
-        textView.setText(String.valueOf("Category :  " + getArguments().getInt("position")));
-    }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
     }
 
     @Override

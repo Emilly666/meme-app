@@ -6,17 +6,33 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.memeapp.R;
+import com.example.memeapp.SharedPreferencesManager;
+import com.example.memeapp.model.Tag.Tag;
 import com.google.android.material.tabs.TabLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
     private TabLayout mTabLayout;
+    private List<Tag> userSavedTags = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dynamic);
+
+        SharedPreferencesManager sp = SharedPreferencesManager.getInstance(getApplicationContext());
+
+        Tag tag = new Tag();
+        tag.setName("ooooooooooooooooooooooooooooooooooooooooooooooooooooo");
+        tag.setId((long)77);
+        //sp.addUserSavedTags(tag);
+
+        userSavedTags = sp.getUserSavedTags();
+
         initViews();
     }
 
@@ -50,14 +66,14 @@ public class MainActivity extends AppCompatActivity {
         setDynamicFragmentToTabLayout();
     }
 
-    // show all the tab using DynamicFragmnetAdapter
     private void setDynamicFragmentToTabLayout() {
-        // here we have given 10 as the tab number
-        // you can give any number here
-        for (int i = 0; i < 10; i++) {
-            // set the tab name as "Page: " + i
-            mTabLayout.addTab(mTabLayout.newTab().setText("Page: " + i));
-        }
+
+        mTabLayout.addTab(mTabLayout.newTab().setText("Main"));
+
+        userSavedTags.forEach(tag -> {
+            mTabLayout.addTab(mTabLayout.newTab().setText(tag.getName()));
+        });
+
         DynamicFragmentAdapter mDynamicFragmentAdapter = new DynamicFragmentAdapter(getSupportFragmentManager(), mTabLayout.getTabCount());
 
         // set the adapter
