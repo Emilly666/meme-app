@@ -1,22 +1,18 @@
-package com.example.memeapp.ui.main;
+package com.example.memeapp.ui.memebrowsing;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.example.memeapp.R;
 import com.example.memeapp.SharedPreferencesManager;
 import com.example.memeapp.model.Tag.Tag;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class DynamicFragment extends Fragment {
@@ -44,7 +40,9 @@ public class DynamicFragment extends Fragment {
 
     // initialise the categories
     private void initViews(View view) {
-
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        Tag tag = sp.getUserSavedTags().get(getArguments().getInt("position") - 1);
+        toolbar.setTitle(getString(R.string.hashtag, tag.getName()));
     }
 
     @Override

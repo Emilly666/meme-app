@@ -8,6 +8,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.example.memeapp.R;
 import com.example.memeapp.SharedPreferencesManager;
 import com.example.memeapp.model.Tag.Tag;
+import com.example.memeapp.ui.memebrowsing.DynamicFragmentAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setDynamicFragmentToTabLayout() {
 
-        mTabLayout.addTab(mTabLayout.newTab().setText("Main"));
+        mTabLayout.addTab(mTabLayout.newTab().setText(R.string.category_name_main));
 
         userSavedTags.forEach(tag -> {
             mTabLayout.addTab(mTabLayout.newTab().setText(tag.getName()));
