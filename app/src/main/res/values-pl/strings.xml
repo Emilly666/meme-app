@@ -8,4 +8,7 @@
     <string name="category_placeholder">Category</string>
 
     <string name="category_menu_button">Otwórz menu</string>
+    <string name="text_label_1">Profil</string>
+    <string name="text_label_2">Dodaj</string>
+    <string name="text_label_3">Ustawienia</string>
 </resources>

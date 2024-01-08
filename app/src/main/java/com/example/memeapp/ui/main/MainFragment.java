@@ -1,4 +1,4 @@
-package com.example.memeapp.ui.memebrowsing;
+package com.example.memeapp.ui.main;
 
 import android.os.Bundle;
 

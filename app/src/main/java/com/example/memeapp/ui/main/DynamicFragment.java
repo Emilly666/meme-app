@@ -1,4 +1,4 @@
-package com.example.memeapp.ui.memebrowsing;
+package com.example.memeapp.ui.main;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.memeapp.R;
 import com.example.memeapp.SharedPreferencesManager;
-import com.example.memeapp.model.Tag.Tag;
+import com.example.memeapp.model.tag.Tag;
 
 
 public class DynamicFragment extends Fragment {

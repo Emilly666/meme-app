@@ -27,4 +27,9 @@
     <style name="Theme.MemeApp.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.MemeApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="BottomNavigationTheme" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">?attr/colorOnSecondary</item> <!-- selected -->
+        <item name="android:textColorSecondary">?attr/colorOnSecondary</item> <!-- not selected -->
+    </style>
 </resources>

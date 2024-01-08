@@ -9,7 +9,7 @@
         android:top="0dip"/>
     <stroke
         android:width="4dp"
-        android:color="?attr/colorOnPrimary" />
+        android:color="#00000000" />
     <size
         android:height="@dimen/bubble_size"
         android:width="@dimen/bubble_size"/>

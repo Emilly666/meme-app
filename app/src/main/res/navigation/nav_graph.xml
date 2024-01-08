@@ -10,6 +10,6 @@
         android:label="MainActivity" />
     <fragment
         android:id="@+id/dynamicFragment"
-        android:name="com.example.memeapp.ui.memebrowsing.DynamicFragment"
+        android:name="com.example.memeapp.ui.main.DynamicFragment"
         android:label="DynamicFragment" />
 </navigation>

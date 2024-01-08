@@ -3,7 +3,7 @@ package com.example.memeapp;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.example.memeapp.model.Tag.Tag;
+import com.example.memeapp.model.tag.Tag;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

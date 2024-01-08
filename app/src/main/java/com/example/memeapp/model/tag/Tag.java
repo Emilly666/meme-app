@@ -1,4 +1,4 @@
-package com.example.memeapp.model.user;
+package com.example.memeapp.model.tag;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,12 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Tag {
 
     private long id;
-    private String nickname;
-    private String password;
-    private String pictureURL;
-    private String email;
+    private String name;
 }
-
