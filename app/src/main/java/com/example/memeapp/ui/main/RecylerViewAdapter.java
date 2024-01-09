@@ -3,6 +3,7 @@ package com.example.memeapp.ui.main;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static androidx.core.content.ContextCompat.startActivity;
 
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
@@ -10,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -18,6 +20,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -40,7 +43,10 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -77,7 +83,11 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ItemViewHolder) {
-            populateItemRows((ItemViewHolder) holder, position);
+            try {
+                populateItemRows((ItemViewHolder) holder, position);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         } else if (holder instanceof LoadingviewHolder) {
             showLoadingView((LoadingviewHolder) holder, position);
         }
@@ -112,6 +122,7 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             buttonComments = itemView.findViewById(R.id.buttonComments);
             imageButtonMenuPopup = itemView.findViewById(R.id.imageButtonMenuPopup);
             tagsLayout = itemView.findViewById(R.id.tagsLayout);
+
         }
     }
 
@@ -128,7 +139,7 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         // Progressbar would be displayed
     }
 
-    private void populateItemRows(ItemViewHolder viewHolder, int position) {
+    private void populateItemRows(ItemViewHolder viewHolder, int position) throws IOException {
         viewHolder.titleTextView.setText(memeList.get(position).getTitle());
         viewHolder.authorTextView.setText(memeList.get(position).getAuthor_nickname());
         viewHolder.dateTextView.setText(hoursDifference(memeList.get(position).getAdd_timestamp()));
@@ -140,8 +151,12 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         }
         //String imageUri = memeList.get(position).getFile_path();
-        String imageUri = "https://static.wikia.nocookie.net/lennywce/images/5/57/Pepe.png/revision/latest/scale-to-width-down/438?cb=20160710224237&path-prefix=pl";
+        String imageUri = "http://192.168.100.32:8080/meme/png/image.png";
+        Picasso.get().setLoggingEnabled(true);
         Picasso.get().load(imageUri).into(viewHolder.imageViewMeme);
+
+
+
 
         viewHolder.imageButtonMenuPopup.setOnClickListener(new View.OnClickListener() {
             @Override

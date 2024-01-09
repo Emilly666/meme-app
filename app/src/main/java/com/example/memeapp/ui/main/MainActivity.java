@@ -2,7 +2,9 @@ package com.example.memeapp.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         userSavedTags = sp.getUserSavedTags();
 
         initViews();
+
+
     }
 
     private void initViews() {
@@ -67,9 +71,12 @@ public class MainActivity extends AppCompatActivity {
 
         mTabLayout.addTab(mTabLayout.newTab().setText(R.string.category_name_main));
 
-        userSavedTags.forEach(tag -> {
-            mTabLayout.addTab(mTabLayout.newTab().setText(tag.getName()));
-        });
+        if(userSavedTags != null){
+            userSavedTags.forEach(tag -> {
+                mTabLayout.addTab(mTabLayout.newTab().setText(tag.getName()));
+            });
+        }
+
 
         DynamicFragmentAdapter mDynamicFragmentAdapter = new DynamicFragmentAdapter(getSupportFragmentManager(), mTabLayout.getTabCount());
 
