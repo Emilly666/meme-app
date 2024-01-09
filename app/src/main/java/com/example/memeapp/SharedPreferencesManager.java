@@ -13,6 +13,8 @@ import java.util.List;
 public class SharedPreferencesManager {
     private static final String APP_PREFS = "AppPrefsFile";
     private static final List<Tag> userSavedTags = new ArrayList<>();
+    private static final String SERVER_ADDRESS = "http://192.168.94.175:8080/";
+    private static final String token = "";
 
     private SharedPreferences sp;
     private static SharedPreferencesManager instance;
@@ -42,8 +44,17 @@ public class SharedPreferencesManager {
     }
     public List<Tag> getUserSavedTags() {
         Gson gson = new Gson();
-
-
         return gson.fromJson(sp.getString("tags", null), new TypeToken<ArrayList<Tag>>() {}.getType());
+    }
+    public String getServerAddress(){
+        return SERVER_ADDRESS;
+    }
+    public void setToken(String token){
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("token", token);
+        editor.apply();
+    }
+    public String getToken(){
+        return sp.getString("token", null);
     }
 }

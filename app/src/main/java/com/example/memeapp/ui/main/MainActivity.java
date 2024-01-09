@@ -15,6 +15,7 @@ import com.example.memeapp.SharedPreferencesManager;
 import com.example.memeapp.model.tag.Tag;
 import com.example.memeapp.ui.addmeme.AddMeme;
 import com.example.memeapp.ui.profile.UserProfile;
+import com.example.memeapp.ui.register.RegisterActivity;
 import com.example.memeapp.ui.settings.SettingsActivity;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.tabs.TabLayout;
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 int menuItemId =  item.getItemId();
 
                 if (menuItemId ==  R.id.page_profile) {
-                    Intent myIntent = new Intent(MainActivity.this, UserProfile.class);
+                    Intent myIntent = new Intent(MainActivity.this, RegisterActivity.class);
                     //myIntent.putExtra("key", 1); //Optional parameters
                     MainActivity.this.startActivity(myIntent);
                     return true;

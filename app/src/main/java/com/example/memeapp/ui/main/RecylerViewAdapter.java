@@ -37,6 +37,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.memeapp.R;
+import com.example.memeapp.SharedPreferencesManager;
 import com.example.memeapp.model.meme.Meme;
 import com.example.memeapp.ui.profile.UserProfile;
 import com.squareup.picasso.Picasso;
@@ -60,6 +61,7 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private List<Meme> memeList;
     private Context context;
     private final Activity myActivity;
+    private SharedPreferencesManager sharedPreferencesManager;
 
     public RecylerViewAdapter(List<Meme> itemList, Activity activity) {
         memeList = itemList;
@@ -144,6 +146,7 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         viewHolder.authorTextView.setText(memeList.get(position).getAuthor_nickname());
         viewHolder.dateTextView.setText(hoursDifference(memeList.get(position).getAdd_timestamp()));
         viewHolder.likesDisplay.setText(String.valueOf(memeList.get(position).getTotal_likes()));
+        sharedPreferencesManager =SharedPreferencesManager.getInstance(context);
         if (memeList.get(position).getReactionType() == 1) { // liked
 
         }
@@ -151,7 +154,7 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         }
         //String imageUri = memeList.get(position).getFile_path();
-        String imageUri = "http://192.168.100.32:8080/meme/png/image.png";
+        String imageUri = sharedPreferencesManager.getServerAddress() + "meme/png/image.png";
         Picasso.get().setLoggingEnabled(true);
         Picasso.get().load(imageUri).into(viewHolder.imageViewMeme);
 
