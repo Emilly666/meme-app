@@ -11,4 +11,7 @@
     <string name="text_label_1">Profil</string>
     <string name="text_label_2">Dodaj</string>
     <string name="text_label_3">Ustawienia</string>
+    <string name="the_meme">Mem</string>
+    <string name="share">Udostępnij</string>
+    <string name="download">Pobierz</string>
 </resources>

@@ -19,6 +19,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,11 +33,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dynamic);
 
+        TimeZone utcTimeZone = TimeZone.getTimeZone("UTC");
+        TimeZone.setDefault(utcTimeZone);
+
         SharedPreferencesManager sp = SharedPreferencesManager.getInstance(getApplicationContext());
 
         Tag tag = new Tag();
         tag.setName("ooooooooooooooooooooooooooooooooooooooooooooooooooooo");
-        tag.setId((long)77);
+        tag.setId(77);
         //sp.addUserSavedTags(tag);
 
         userSavedTags = sp.getUserSavedTags();

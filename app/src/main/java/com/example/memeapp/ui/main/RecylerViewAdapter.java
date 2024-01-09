@@ -4,7 +4,6 @@ import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static androidx.core.content.ContextCompat.startActivity;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -15,10 +14,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,23 +23,26 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.memeapp.R;
 import com.example.memeapp.model.meme.Meme;
+import com.example.memeapp.ui.profile.UserProfile;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.File;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -51,12 +51,12 @@ import java.util.List;
 public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final int VIEW_TYPE_ITEM = 0;
-    private List<Meme> mItemList;
+    private List<Meme> memeList;
     private Context context;
     private final Activity myActivity;
 
     public RecylerViewAdapter(List<Meme> itemList, Activity activity) {
-        mItemList = itemList;
+        memeList = itemList;
         myActivity = activity;
     }
 
@@ -69,7 +69,7 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.meme, parent, false);
             return new ItemViewHolder(view);
         } else {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.meme_loading, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.loading, parent, false);
             return new LoadingviewHolder(view);
         }
     }
@@ -83,36 +83,35 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    // getItemCount() method returns the size of the list
     @Override
     public int getItemCount() {
-        return mItemList == null ? 0 : mItemList.size();
+        return memeList == null ? 0 : memeList.size();
     }
 
-    // getItemViewType() method is the method where we check each element
-    // of the list. If the element is NULL we set the view type as 1 else 0
     public int getItemViewType(int position) {
         int VIEW_TYPE_LOADING = 1;
-        return mItemList.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
+        return memeList.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         ImageView imageViewMeme;
-        TextView titleTextView, authorTextView, dateTextView, categoryText, textID;
-        Button likes, dislikes;
+        TextView authorTextView, dateTextView, titleTextView;
+        LinearLayout tagsLayout;
+        Button buttonLikes, buttonDislikes, likesDisplay, buttonComments;
         ImageButton imageButtonMenuPopup;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
             imageViewMeme = itemView.findViewById(R.id.imageViewMeme);
-            titleTextView = itemView.findViewById(R.id.titleText);
-            authorTextView = itemView.findViewById(R.id.authorLink);
-            dateTextView = itemView.findViewById(R.id.dateTextView);
-            categoryText = itemView.findViewById(R.id.categoryText);
-            textID = itemView.findViewById(R.id.textID);
-            likes = itemView.findViewById(R.id.likeButton);
-            dislikes = itemView.findViewById(R.id.dislikeButton);
+            titleTextView = itemView.findViewById(R.id.title);
+            authorTextView = itemView.findViewById(R.id.author);
+            dateTextView = itemView.findViewById(R.id.date);
+            buttonLikes = itemView.findViewById(R.id.buttonLikes);
+            buttonDislikes = itemView.findViewById(R.id.buttonDislikes);
+            likesDisplay = itemView.findViewById(R.id.likesDisplay);
+            buttonComments = itemView.findViewById(R.id.buttonComments);
             imageButtonMenuPopup = itemView.findViewById(R.id.imageButtonMenuPopup);
+            tagsLayout = itemView.findViewById(R.id.tagsLayout);
         }
     }
 
@@ -129,44 +128,26 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         // Progressbar would be displayed
     }
 
-    private static String hoursDifference(LocalDateTime date1,
-                                          LocalDateTime date2) {
-        long diffInMin = ChronoUnit.MINUTES.between(date2, date1);
-        if (diffInMin < 60) {
-            return diffInMin + "min";
-        } else if ((diffInMin / 60) < 24) {
-            return ChronoUnit.HOURS.between(date2, date1) + "h";
-        } else {
-            return ChronoUnit.DAYS.between(date2, date1) + "d";
-        }
-    }
-
-    @SuppressLint("RestrictedApi")
     private void populateItemRows(ItemViewHolder viewHolder, int position) {
-        viewHolder.textID.setText(String.valueOf(mItemList.get(position).u_id));
-        viewHolder.titleTextView.setText(mItemList.get(position).title);
-        viewHolder.authorTextView.setText(mItemList.get(position).u_name);
-        viewHolder.categoryText.setText(mItemList.get(position).cat_name + "/");
-        viewHolder.dateTextView.setText(hoursDifference(LocalDateTime.now(ZoneId.of("UTC+2")), mItemList.get(position).uploadDate));
-        viewHolder.likes.setText(String.valueOf(mItemList.get(position).likes));
-        viewHolder.dislikes.setText(String.valueOf(mItemList.get(position).dislikes));
+        viewHolder.titleTextView.setText(memeList.get(position).getTitle());
+        viewHolder.authorTextView.setText(memeList.get(position).getAuthor_nickname());
+        viewHolder.dateTextView.setText(hoursDifference(memeList.get(position).getAdd_timestamp()));
+        viewHolder.likesDisplay.setText(String.valueOf(memeList.get(position).getTotal_likes()));
+        if (memeList.get(position).getReactionType() == 1) { // liked
 
-        viewHolder.likes.setBackgroundResource(R.drawable.like_button_bg);
-        viewHolder.dislikes.setBackgroundResource(R.drawable.like_button_bg);
-        if (mItemList.get(position).reaction == 1) { // liked
-            viewHolder.likes.setBackgroundResource(R.drawable.like_button_bg_selected);
         }
-        else if (mItemList.get(position).reaction == -1) { // disliked
-            viewHolder.dislikes.setBackgroundResource(R.drawable.like_button_bg_selected);
-        }else{}
-        String imageUri = mItemList.get(position).url;
+        else if (memeList.get(position).getReactionType() == -1) { // disliked
+
+        }
+        //String imageUri = memeList.get(position).getFile_path();
+        String imageUri = "https://static.wikia.nocookie.net/lennywce/images/5/57/Pepe.png/revision/latest/scale-to-width-down/438?cb=20160710224237&path-prefix=pl";
         Picasso.get().load(imageUri).into(viewHolder.imageViewMeme);
 
         viewHolder.imageButtonMenuPopup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 PopupMenu menu = new PopupMenu(context, viewHolder.imageButtonMenuPopup);
-                menu.inflate(R.menu.popup_meme_menu);
+                menu.inflate(R.menu.meme_popup_menu);
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -230,55 +211,45 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         return false;
                     }
                 });
-                menu.setForceShowIcon(true);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    menu.setForceShowIcon(true);
+                }
                 menu.show();
             }
         });
-        viewHolder.imageViewMeme.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                View popupView = LayoutInflater.from(context).inflate(R.layout.show_full_image_popup, null, false);
-                ImageView imageView = popupView.findViewById(R.id.imageView2);
-                ImageButton closeButton = popupView.findViewById(R.id.imageButton3);
-                Picasso.get().load(imageUri).into(imageView);
-
-                int width = ConstraintLayout.LayoutParams.MATCH_PARENT;
-                int height = ConstraintLayout.LayoutParams.MATCH_PARENT;
-                boolean focusable = true; // lets taps outside the popup also dismiss it
-                final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-
-                popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-
-                closeButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        popupWindow.dismiss();
-                    }
-                });
-            }
-        });
-
         viewHolder.authorTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), UserProfile.class);
-                intent.putExtra("user_id", mItemList.get(position).u_id);
+                intent.putExtra("user_id", memeList.get(position).getAuthor_id());
                 view.getContext().startActivity(intent);
             }
         });
-        viewHolder.likes.setOnClickListener(new View.OnClickListener() {
+        viewHolder.buttonLikes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
             };
         });
-        viewHolder.dislikes.setOnClickListener(new View.OnClickListener() {
+        viewHolder.buttonDislikes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
             }
         });
     }
-
+    private static String hoursDifference(Timestamp addDate) {
+        LocalDateTime date1 = LocalDateTime.now();
+        LocalDateTime date2 = addDate.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
+        long diffInMin = ChronoUnit.MINUTES.between(date2, date1);
+        if (diffInMin < 60) {
+            return diffInMin + "min";
+        } else if ((diffInMin / 60) < 24) {
+            return ChronoUnit.HOURS.between(date2, date1) + "h";
+        } else {
+            return ChronoUnit.DAYS.between(date2, date1) + "d";
+        }
+    }
     public boolean isStoragePermissionGranted() {
         if (checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             Log.v("LOG", "Permission granted");
