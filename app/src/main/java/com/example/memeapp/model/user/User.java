@@ -1,18 +1,30 @@
 package com.example.memeapp.model.user;
 
+import com.example.memeapp.model.AuthenticationResponse;
+
 public class User {
 
-    private long id;
+    private Integer id = 0;
     private String nickname;
+    private String email;
     private String password;
     private String pictureURL;
-    private String email;
 
+    public User(AuthenticationResponse response){
+        id = response.getUser_id();
+        nickname = response.getNickname();
+        email = response.getEmail();
+        password = response.getPassword();
+        pictureURL = response.getPictureURL();
+    }
+    public User(){
+
+    }
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

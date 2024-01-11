@@ -147,19 +147,20 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         viewHolder.dateTextView.setText(hoursDifference(memeList.get(position).getAdd_timestamp()));
         viewHolder.likesDisplay.setText(String.valueOf(memeList.get(position).getTotal_likes()));
         sharedPreferencesManager =SharedPreferencesManager.getInstance(context);
-        if (memeList.get(position).getReactionType() == 1) { // liked
+        if (memeList.get(position).getReactionValue() == 1) { // liked
 
         }
-        else if (memeList.get(position).getReactionType() == -1) { // disliked
+        else if (memeList.get(position).getReactionValue() == -1) { // disliked
 
         }
-        //String imageUri = memeList.get(position).getFile_path();
-        String imageUri = sharedPreferencesManager.getServerAddress() + "meme/png/image.png";
+        String imageUri = sharedPreferencesManager.getServerAddress() + "meme/png/" + memeList.get(position).getFile_path();
         Picasso.get().setLoggingEnabled(true);
         Picasso.get().load(imageUri).into(viewHolder.imageViewMeme);
-
-
-
+        for(int i = 0; i < memeList.get(position).getTags().size(); i++){
+            Button button = new Button(context);
+            button.setText(memeList.get(position).getTags().get(i).getName());
+            viewHolder.tagsLayout.addView(button);
+        }
 
         viewHolder.imageButtonMenuPopup.setOnClickListener(new View.OnClickListener() {
             @Override

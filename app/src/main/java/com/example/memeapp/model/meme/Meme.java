@@ -1,19 +1,33 @@
 package com.example.memeapp.model.meme;
 
+import com.example.memeapp.model.tag.Tag;
+
 import java.sql.Timestamp;
+import java.util.List;
 
 public class Meme {
     private Integer id;
     private String file_path;
     private String title;
-    private long user_id;
     private Timestamp add_timestamp = new Timestamp(System.currentTimeMillis());
     private int total_likes = 0;
     private Integer author_id;
     private String author_nickname;
-    private int reactionType;
+    private int reactionValue;
+    private List<Tag> tags;
 
-
+    public Meme(Integer id, String file_path, String title, Timestamp add_timestamp, int total_likes, Integer author_id, String author_nickname, int reactionValue, List<Tag> tags) {
+        this.id = id;
+        this.file_path = file_path;
+        this.title = title;
+        this.add_timestamp = add_timestamp;
+        this.total_likes = total_likes;
+        this.author_id = author_id;
+        this.author_nickname = author_nickname;
+        this.reactionValue = reactionValue;
+        this.tags = tags;
+    }
+    public Meme(){};
 
     public Integer getId() {
         return id;
@@ -37,14 +51,6 @@ public class Meme {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public long getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(long user_id) {
-        this.user_id = user_id;
     }
 
     public Timestamp getAdd_timestamp() {
@@ -79,11 +85,19 @@ public class Meme {
         this.author_nickname = author_nickname;
     }
 
-    public int getReactionType() {
-        return reactionType;
+    public int getReactionValue() {
+        return reactionValue;
     }
 
-    public void setReactionType(int reactionType) {
-        this.reactionType = reactionType;
+    public void setReactionValue(int reactionValue) {
+        this.reactionValue = reactionValue;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
     }
 }

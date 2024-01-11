@@ -14,4 +14,21 @@
     <string name="the_meme">The meme</string>
     <string name="share">Share</string>
     <string name="download">Download</string>
+    <string name="e_mail_address">E-mail address</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="register_string">Don\'t have an account? Register here</string>
+    <string name="login_error">Login error</string>
+    <string name="register">Register</string>
+    <string name="register_error">Register error</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="email_taken">E-mail is already taken</string>
+    <string name="login_successful">Login Successful</string>
+    <string name="register_successful">Register Successful</string>
+    <string name="field_required">This field is required</string>
+    <string name="password_minimum">Password must be minimum 8 characters</string>
+    <string name="email_invalid">Please enter a Valid E-Mail Address</string>
+    <string name="password_not_matching">Passwords are not identical</string>
+    <string name="password_weak">Password is too weak</string>
+
 </resources>

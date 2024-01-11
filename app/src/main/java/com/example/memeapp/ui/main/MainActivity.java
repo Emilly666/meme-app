@@ -13,7 +13,9 @@ import androidx.viewpager.widget.ViewPager;
 import com.example.memeapp.R;
 import com.example.memeapp.SharedPreferencesManager;
 import com.example.memeapp.model.tag.Tag;
+import com.example.memeapp.model.user.User;
 import com.example.memeapp.ui.addmeme.AddMeme;
+import com.example.memeapp.ui.login.LoginActivity;
 import com.example.memeapp.ui.profile.UserProfile;
 import com.example.memeapp.ui.register.RegisterActivity;
 import com.example.memeapp.ui.settings.SettingsActivity;
@@ -24,12 +26,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 
+import okhttp3.MediaType;
+
 public class MainActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
     private TabLayout mTabLayout;
     private List<Tag> userSavedTags = new ArrayList<>();
     private NavigationBarView bottomNavigation;
+    private SharedPreferencesManager sharedPreferencesManager;
+    public static final MediaType JSON = MediaType.get("application/json");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +45,15 @@ public class MainActivity extends AppCompatActivity {
         TimeZone utcTimeZone = TimeZone.getTimeZone("UTC");
         TimeZone.setDefault(utcTimeZone);
 
-        SharedPreferencesManager sp = SharedPreferencesManager.getInstance(getApplicationContext());
+        sharedPreferencesManager = SharedPreferencesManager.getInstance(getApplicationContext());
 
-        Tag tag = new Tag();
-        tag.setName("ooooooooooooooooooooooooooooooooooooooooooooooooooooo");
-        tag.setId(77);
+        Tag tag = new Tag(77, "00000000000");
         //sp.addUserSavedTags(tag);
 
-        userSavedTags = sp.getUserSavedTags();
+        sharedPreferencesManager.setUser(new User());
+        sharedPreferencesManager.setToken(null);
+
+        userSavedTags = sharedPreferencesManager.getUserSavedTags();
 
         initViews();
 
@@ -94,8 +101,13 @@ public class MainActivity extends AppCompatActivity {
                 int menuItemId =  item.getItemId();
 
                 if (menuItemId ==  R.id.page_profile) {
-                    Intent myIntent = new Intent(MainActivity.this, RegisterActivity.class);
-                    //myIntent.putExtra("key", 1); //Optional parameters
+                    Intent myIntent;
+                    if(sharedPreferencesManager.getUser() == null){
+                        myIntent = new Intent(MainActivity.this, LoginActivity.class);
+                    }
+                    else{
+                        myIntent = new Intent(MainActivity.this, UserProfile.class);
+                    }
                     MainActivity.this.startActivity(myIntent);
                     return true;
                 }

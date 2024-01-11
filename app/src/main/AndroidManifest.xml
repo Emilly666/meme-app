@@ -16,12 +16,11 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="33">
         <activity
-            android:name=".ui.register.RegisterActivity"
+            android:name=".ui.login.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.login.RegisterActivity"
-            android:exported="false"
-            android:label="@string/title_activity_register" />
+            android:name=".ui.register.RegisterActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.addmeme.AddMeme"
             android:exported="false" />
