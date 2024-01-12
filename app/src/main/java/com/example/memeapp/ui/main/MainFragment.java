@@ -20,7 +20,8 @@ import com.example.memeapp.SharedPreferencesManager;
 import com.example.memeapp.databinding.FragmentMainBinding;
 
 import com.example.memeapp.R;
-import com.example.memeapp.model.AuthenticationResponse;
+import com.example.memeapp.dto.AuthenticationResponse;
+import com.example.memeapp.dto.GetMemesResponse;
 import com.example.memeapp.model.meme.Meme;
 import com.example.memeapp.model.tag.Tag;
 import com.google.gson.Gson;
@@ -172,39 +173,13 @@ public class MainFragment extends Fragment {
                 }
                 else{
                     Gson gson = new Gson();
-                    JsonObject jsonResponse = gson.fromJson(response.body().string(), JsonObject.class);
-                    JsonArray list = jsonResponse.get("memesWithTags").getAsJsonArray();
-                    if(list.size() < MEME_BATCH){
+                    GetMemesResponse getMemesResponse = gson.fromJson(response.body().string(), new TypeToken<GetMemesResponse>() {}.getType());
+                    if(getMemesResponse.getMemesWithTags().size() < MEME_BATCH){
                         loadMore = false;
                     }
-                    for(int i = 0; i < list.size(); i++){
-                        JsonObject user = list.get(i).getAsJsonObject().get("user").getAsJsonObject();
-                        JsonObject meme = list.get(i).getAsJsonObject().get("meme").getAsJsonObject();
+                    for (Meme meme: getMemesResponse.getMemesWithTags()) {
 
-                        List<Tag> tagList = new ArrayList<>();
-                        JsonArray tags = list.get(i).getAsJsonObject().get("tags").getAsJsonArray();
-                        for(int j = 0; j < tags.size(); j++){
-                            int id = tags.get(j).getAsJsonObject().get("id").getAsInt();
-                            String name= tags.get(j).getAsJsonObject().get("name").getAsString();
-                            tagList.add(new Tag(id, name));
-                        }
-                        int value = 0;
-                        if(!list.get(i).getAsJsonObject().get("liked").isJsonNull()){
-                            value = list.get(i).getAsJsonObject().get("liked").getAsInt();
-                        }
-
-                        Meme newMeme = new Meme(
-                                meme.get("id").getAsInt(),
-                                meme.get("file_path").getAsString(),
-                                meme.get("title").getAsString(),
-                                Timestamp.valueOf(meme.get("add_timestamp").getAsString()),
-                                meme.get("total_likes").getAsInt(),
-                                user.get("id").getAsInt(),
-                                user.get("nickname").getAsString(),
-                                value,
-                                tagList
-                        );
-                        memesArrayList.add(newMeme);
+                        memesArrayList.add(meme);
                         recyclerView.post(new Runnable() {
                             public void run() {
                                 recylerViewAdapter.notifyItemInserted(memesArrayList.size()-1);

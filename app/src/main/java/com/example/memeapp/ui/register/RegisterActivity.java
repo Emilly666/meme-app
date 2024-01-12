@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.example.memeapp.R;
 import com.example.memeapp.SharedPreferencesManager;
-import com.example.memeapp.model.AuthenticationResponse;
+import com.example.memeapp.dto.AuthenticationResponse;
 import com.example.memeapp.model.user.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

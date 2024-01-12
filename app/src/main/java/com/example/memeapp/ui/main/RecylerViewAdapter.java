@@ -1,6 +1,7 @@
 package com.example.memeapp.ui.main;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
+import static androidx.core.content.ContextCompat.getDrawable;
 import static androidx.core.content.ContextCompat.startActivity;
 
 
@@ -11,7 +12,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -20,7 +20,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -36,6 +35,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.memeapp.R;
 import com.example.memeapp.SharedPreferencesManager;
 import com.example.memeapp.model.meme.Meme;
@@ -46,8 +46,6 @@ import com.squareup.picasso.Target;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -153,12 +151,32 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         else if (memeList.get(position).getReactionValue() == -1) { // disliked
 
         }
-        String imageUri = sharedPreferencesManager.getServerAddress() + "meme/png/" + memeList.get(position).getFile_path();
-        Picasso.get().setLoggingEnabled(true);
-        Picasso.get().load(imageUri).into(viewHolder.imageViewMeme);
+        String imageUrl;
+        if(memeList.get(position).getContent_type().equals("image/gif")){
+            imageUrl = sharedPreferencesManager.getServerAddress() + "meme/gif/" + memeList.get(position).getFile_path();
+            Glide
+                .with(context)
+                .asGif()
+                .load(imageUrl)
+                .into(viewHolder.imageViewMeme);
+        }else{
+            imageUrl = sharedPreferencesManager.getServerAddress() + "meme/png/" + memeList.get(position).getFile_path();
+            Glide
+                .with(context)
+                .load(imageUrl)
+                .into(viewHolder.imageViewMeme);
+        }
+
         for(int i = 0; i < memeList.get(position).getTags().size(); i++){
             Button button = new Button(context);
             button.setText(memeList.get(position).getTags().get(i).getName());
+            button.setBackground(getDrawable(context, R.drawable.tag_background));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(10, 10, 10, 10);
+            button.setLayoutParams(params);
             viewHolder.tagsLayout.addView(button);
         }
 
@@ -174,10 +192,10 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             if (isStoragePermissionGranted()) {
                                 String state = Environment.getExternalStorageState();
                                 if (Environment.MEDIA_MOUNTED.equals(state)) {
-                                    Picasso.get().load(imageUri).into(new Target() {
+                                    Picasso.get().load(imageUrl).into(new Target() {
                                         @Override
                                         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                            saveImageToDownloadFolder(Uri.parse(imageUri).getLastPathSegment(), bitmap);
+                                            saveImageToDownloadFolder(Uri.parse(imageUrl).getLastPathSegment(), bitmap);
                                         }
                                         @Override
                                         public void onBitmapFailed(Exception e, Drawable errorDrawable) {
@@ -194,7 +212,7 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             }
                         }
                         if (item.getItemId() == R.id.action_share) {
-                            Picasso.get().load(imageUri).into(new Target() {
+                            Picasso.get().load(imageUrl).into(new Target() {
                                 @Override
                                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                                     ContentValues values = new ContentValues();

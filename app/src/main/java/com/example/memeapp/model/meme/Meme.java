@@ -8,6 +8,7 @@ import java.util.List;
 public class Meme {
     private Integer id;
     private String file_path;
+    private String content_type;
     private String title;
     private Timestamp add_timestamp = new Timestamp(System.currentTimeMillis());
     private int total_likes = 0;
@@ -16,9 +17,10 @@ public class Meme {
     private int reactionValue;
     private List<Tag> tags;
 
-    public Meme(Integer id, String file_path, String title, Timestamp add_timestamp, int total_likes, Integer author_id, String author_nickname, int reactionValue, List<Tag> tags) {
+    public Meme(Integer id, String file_path, String content_type, String title, Timestamp add_timestamp, int total_likes, Integer author_id, String author_nickname, int reactionValue, List<Tag> tags) {
         this.id = id;
         this.file_path = file_path;
+        this.content_type = content_type;
         this.title = title;
         this.add_timestamp = add_timestamp;
         this.total_likes = total_likes;
@@ -81,9 +83,7 @@ public class Meme {
         return author_nickname;
     }
 
-    public void setAuthor_nickname(String author_nickname) {
-        this.author_nickname = author_nickname;
-    }
+    public void setAuthor_nickname(String author_nickname) { this.author_nickname = author_nickname; }
 
     public int getReactionValue() {
         return reactionValue;
@@ -100,4 +100,7 @@ public class Meme {
     public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
+
+    public String getContent_type() { return this.content_type; }
+    public void setContent_type(String content_type) { this.content_type = content_type; }
 }

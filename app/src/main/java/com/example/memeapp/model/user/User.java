@@ -1,6 +1,6 @@
 package com.example.memeapp.model.user;
 
-import com.example.memeapp.model.AuthenticationResponse;
+import com.example.memeapp.dto.AuthenticationResponse;
 
 public class User {
 

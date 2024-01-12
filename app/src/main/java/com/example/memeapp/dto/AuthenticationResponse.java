@@ -1,4 +1,4 @@
-package com.example.memeapp.model;
+package com.example.memeapp.dto;
 
 
 public class AuthenticationResponse {

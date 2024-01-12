@@ -2,9 +2,6 @@ package com.example.memeapp.ui.login;
 
 import static com.example.memeapp.ui.main.MainActivity.JSON;
 
-import androidx.activity.OnBackPressedDispatcher;
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -13,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,7 +18,7 @@ import android.widget.Toast;
 
 import com.example.memeapp.R;
 import com.example.memeapp.SharedPreferencesManager;
-import com.example.memeapp.model.AuthenticationResponse;
+import com.example.memeapp.dto.AuthenticationResponse;
 import com.example.memeapp.model.user.User;
 import com.example.memeapp.ui.register.RegisterActivity;
 import com.google.gson.Gson;
@@ -32,7 +28,6 @@ import java.io.IOException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
