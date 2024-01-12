@@ -1,16 +1,14 @@
 package com.example.memeapp.ui.main;
 
-import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static androidx.core.content.ContextCompat.getDrawable;
 import static androidx.core.content.ContextCompat.startActivity;
 
 
-import android.Manifest;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -32,10 +30,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.memeapp.R;
 import com.example.memeapp.SharedPreferencesManager;
 import com.example.memeapp.model.meme.Meme;
@@ -43,15 +51,22 @@ import com.example.memeapp.ui.profile.UserProfile;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Objects;
 
 public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -108,7 +123,6 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         TextView authorTextView, dateTextView, titleTextView;
         LinearLayout tagsLayout;
         Button buttonLikes, buttonDislikes, likesDisplay, buttonComments;
-        ImageButton imageButtonMenuPopup;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -120,7 +134,6 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             buttonDislikes = itemView.findViewById(R.id.buttonDislikes);
             likesDisplay = itemView.findViewById(R.id.likesDisplay);
             buttonComments = itemView.findViewById(R.id.buttonComments);
-            imageButtonMenuPopup = itemView.findViewById(R.id.imageButtonMenuPopup);
             tagsLayout = itemView.findViewById(R.id.tagsLayout);
 
         }
@@ -179,81 +192,6 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             button.setLayoutParams(params);
             viewHolder.tagsLayout.addView(button);
         }
-
-        viewHolder.imageButtonMenuPopup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PopupMenu menu = new PopupMenu(context, viewHolder.imageButtonMenuPopup);
-                menu.inflate(R.menu.meme_popup_menu);
-                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        if (item.getItemId() == R.id.action_download) {
-                            if (isStoragePermissionGranted()) {
-                                String state = Environment.getExternalStorageState();
-                                if (Environment.MEDIA_MOUNTED.equals(state)) {
-                                    Picasso.get().load(imageUrl).into(new Target() {
-                                        @Override
-                                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                            saveImageToDownloadFolder(Uri.parse(imageUrl).getLastPathSegment(), bitmap);
-                                        }
-                                        @Override
-                                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                                        }
-                                        @Override
-                                        public void onPrepareLoad(Drawable placeHolderDrawable) {
-                                        }
-                                    });
-                                } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-                                    Toast.makeText(context, "Storage is read only", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(context, "Storage does not exist", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                        if (item.getItemId() == R.id.action_share) {
-                            Picasso.get().load(imageUrl).into(new Target() {
-                                @Override
-                                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                    ContentValues values = new ContentValues();
-                                    values.put(MediaStore.Images.Media.DISPLAY_NAME, "image.jpg");
-                                    values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                        values.put(MediaStore.Images.Media.IS_PENDING, 1);
-                                    }
-                                    Uri uri = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-                                    try {
-                                        OutputStream outputStream = context.getContentResolver().openOutputStream(uri);
-                                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-                                        outputStream.close();
-                                        values.clear();
-                                        values.put(MediaStore.Images.Media.IS_PENDING, 0);
-                                        context.getContentResolver().update(uri, values, null, null);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    Intent share = new Intent(Intent.ACTION_SEND);
-                                    share.setType("image/jpeg");
-                                    share.putExtra(Intent.EXTRA_STREAM, uri);
-                                    startActivity(context, Intent.createChooser(share, "Select"), null);
-                                }
-                                @Override
-                                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                                }
-                                @Override
-                                public void onPrepareLoad(Drawable placeHolderDrawable) {
-                                }
-                            });
-                        }
-                        return false;
-                    }
-                });
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    menu.setForceShowIcon(true);
-                }
-                menu.show();
-            }
-        });
         viewHolder.authorTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -285,37 +223,6 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             return ChronoUnit.HOURS.between(date2, date1) + "h";
         } else {
             return ChronoUnit.DAYS.between(date2, date1) + "d";
-        }
-    }
-    public boolean isStoragePermissionGranted() {
-        if (checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            Log.v("LOG", "Permission granted");
-            return true;
-        } else {
-            Log.v("LOG", "Permission revoked");
-            ActivityCompat.requestPermissions(myActivity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-            return false;
-        }
-    }
-
-    public void saveImageToDownloadFolder(String imageFile, Bitmap ibitmap) {
-        try {
-            File filePath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), imageFile);
-            int counter = 1;
-            String newFileName = imageFile;
-            String extension = newFileName.substring(newFileName.lastIndexOf("."));
-            while (filePath.exists()) {
-                newFileName = imageFile.substring(0, imageFile.lastIndexOf('.')) + "(" + counter + ")" + extension;
-                filePath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), newFileName);
-                counter++;
-            }
-            OutputStream outputStream = Files.newOutputStream(filePath.toPath());
-            ibitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-            outputStream.flush();
-            outputStream.close();
-            Toast.makeText(context, "Saved " + newFileName + " in Download Folder", Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }
