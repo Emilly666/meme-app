@@ -1,20 +1,36 @@
 package com.example.memeapp.ui.main;
 
+import static androidx.core.content.ContextCompat.startActivity;
 import static com.example.memeapp.ui.main.MainActivity.JSON;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import com.example.memeapp.SharedPreferencesManager;
 import com.example.memeapp.databinding.FragmentMainBinding;
@@ -24,12 +40,17 @@ import com.example.memeapp.dto.AuthenticationResponse;
 import com.example.memeapp.dto.GetMemesResponse;
 import com.example.memeapp.model.meme.Meme;
 import com.example.memeapp.model.tag.Tag;
+import com.example.memeapp.model.user.User;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +73,7 @@ public class MainFragment extends Fragment {
     private SharedPreferencesManager sharedPreferencesManager;
     private Context context;
     private OkHttpClient client;
+    private Tag tag;
 
     public boolean isLoading = false, loadMore = true;
 
@@ -62,7 +84,6 @@ public class MainFragment extends Fragment {
 
     public static MainFragment newInstance() {
         MainFragment fragment = new MainFragment();
-
         return fragment;
     }
 
@@ -75,32 +96,67 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentMainBinding.inflate(inflater, container, false);
+        binding = FragmentMainBinding.inflate(inflater, container, true);
         View root = binding.getRoot();
 
         super.onCreate(savedInstanceState);
+        context = getContext();
         recyclerView = (RecyclerView)root.findViewById(R.id.recyclerViewMain);
+
         context = getContext();
         sharedPreferencesManager = SharedPreferencesManager.getInstance(context);
         client = new OkHttpClient();
 
         initViews(root);
-        moreMemes(MEME_BATCH);
+        moreMemes(1);
         initAdapter();
         initScrollListener();
 
         return root;
     }
     private void initViews(View view) {
-
+        tag = sharedPreferencesManager.getUserSavedTags().get(getArguments().getInt("position") );
         Toolbar toolbar = view.findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.category_name_main);
+        toolbar.setTitle(getString(R.string.hashtag, tag.getName()));
 
+        if(getArguments().getInt("position") != 0){
+            MaterialButton menuButton = new MaterialButton(context);
+            Toolbar.LayoutParams l1 = new Toolbar.LayoutParams(Toolbar.LayoutParams.WRAP_CONTENT, Toolbar.LayoutParams.WRAP_CONTENT);
+            l1.gravity = Gravity.END;
+            menuButton.setLayoutParams(l1);
+            menuButton.setIcon(ContextCompat.getDrawable(context, R.drawable.baseline_more_vert_24));
+            menuButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PopupMenu menu = new PopupMenu(context, menuButton);
+                    menu.inflate(R.menu.tag_menu);
+                    menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            if (item.getItemId() == R.id.tag_close) {
+                                sharedPreferencesManager.deleteUserSavedTags(getArguments().getInt("position"));
+                                getActivity().finish();
+                                getActivity().overridePendingTransition(0, 0);
+                                Intent myIntent = new Intent(getActivity(), getActivity().getClass());
+                                ContextCompat.startActivity(context, myIntent, null);
+                                getActivity().overridePendingTransition(0, 0);
+                            }
+                            return false;
+                        }
+                    });
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        menu.setForceShowIcon(true);
+                    }
+                    menu.show();
+                }
+            });
+            toolbar.addView(menuButton);
+        }
     }
     public void initAdapter() {
         recylerViewAdapter = new RecylerViewAdapter(memesArrayList, getActivity());
         recyclerView.setAdapter(recylerViewAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        recyclerView.setLayoutManager(new WrapContentLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
     }
     public void initScrollListener() {
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -156,12 +212,19 @@ public class MainFragment extends Fragment {
         }
         String json = "{ " +
                 "\"lastMeme_id\" : \"" + lastMeme_Id + "\", " +
-                "\"tag_id\" : \"" + "0" +"\", " +
+                "\"tag_id\" : \"" + tag.getId() +"\", " +
                 "\"count\" : \"" + MEME_BATCH +"\" " +
                 "}";
         RequestBody body = RequestBody.create(json, JSON);
+        User user;
+        if(sharedPreferencesManager.getUser() == null){
+            user = new User();
+        }
+        else{
+            user = sharedPreferencesManager.getUser();
+        }
         Request request = new Request.Builder()
-                .url(sharedPreferencesManager.getServerAddress() + "meme/get/" + sharedPreferencesManager.getUser().getId())
+                .url(sharedPreferencesManager.getServerAddress() + "meme/get/" + user.getId())
                 .post(body)
                 .build();
         client.newCall(request).enqueue(new Callback() {
@@ -178,7 +241,6 @@ public class MainFragment extends Fragment {
                         loadMore = false;
                     }
                     for (Meme meme: getMemesResponse.getMemesWithTags()) {
-
                         memesArrayList.add(meme);
                         recyclerView.post(new Runnable() {
                             public void run() {

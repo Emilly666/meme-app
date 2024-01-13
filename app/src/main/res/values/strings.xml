@@ -36,5 +36,11 @@
     <string name="email_invalid">Please enter a Valid E-Mail Address</string>
     <string name="password_not_matching">Passwords are not identical</string>
     <string name="password_weak">Password is too weak</string>
+    <string name="close">Close</string>
+    <string name="preview">Meme preview:</string>
+    <string name="choose_image">Choose image</string>
+    <string name="add_meme">Add meme</string>
+    <string name="title">Title</string>
+    <string name="add_tag">Add tag</string>
 
 </resources>

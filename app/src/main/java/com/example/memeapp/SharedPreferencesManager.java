@@ -3,20 +3,21 @@ package com.example.memeapp;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.example.memeapp.dto.AuthenticationResponse;
 import com.example.memeapp.model.tag.Tag;
 import com.example.memeapp.model.user.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class SharedPreferencesManager {
     private static final String APP_PREFS = "AppPrefsFile";
     private static final List<Tag> userSavedTags = new ArrayList<>();
     private static final String SERVER_ADDRESS = "http://192.168.100.32:8080/";
-    private static final String token = "";
-    private static final User user = new User();
 
     private SharedPreferences sp;
     private static SharedPreferencesManager instance;
@@ -38,13 +39,38 @@ public class SharedPreferencesManager {
         SharedPreferences.Editor editor = sp.edit();
         Gson gson = new Gson();
         String jsonText = sp.getString("tags", gson.toJson(userSavedTags));
-        List<Tag> tags = gson.fromJson(jsonText, ArrayList.class);
+        List<Tag> tags = gson.fromJson(jsonText, new TypeToken<List<Tag>>() {}.getType());
 
         tags.add(tag);
 
         jsonText = gson.toJson(tags);
         editor.putString("tags", jsonText);
         editor.apply();
+    }
+    public void deleteUserSavedTags(int position) {
+        SharedPreferences.Editor editor = sp.edit();
+        Gson gson = new Gson();
+        String jsonText = sp.getString("tags", gson.toJson(userSavedTags));
+        List<Tag> tags = gson.fromJson(jsonText, new TypeToken<List<Tag>>() {}.getType());
+
+        tags.remove(position);
+
+        jsonText = gson.toJson(tags);
+        editor.putString("tags", jsonText);
+        editor.apply();
+    }
+    public boolean checkUserSavedTags(Tag tag){
+        SharedPreferences.Editor editor = sp.edit();
+        Gson gson = new Gson();
+        String jsonText = sp.getString("tags", gson.toJson(userSavedTags));
+        List<Tag> tags = gson.fromJson(jsonText, new TypeToken<List<Tag>>() {}.getType());
+
+        for (Tag tag2: tags) {
+            if(Objects.equals(tag2.getId(), tag.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getServerAddress(){
@@ -68,6 +94,15 @@ public class SharedPreferencesManager {
 
         String jsonText = gson.toJson(user);
         editor.putString("user", jsonText);
+        editor.apply();
+    }
+    public boolean isLogged(){
+
+        return sp.getBoolean("logged", false);
+    }
+    public void setLogged(boolean logged) {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean("logged", logged);
         editor.apply();
     }
 }

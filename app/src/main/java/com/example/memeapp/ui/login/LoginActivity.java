@@ -110,13 +110,14 @@ public class LoginActivity extends AppCompatActivity {
                 else{
                     Gson gson = new Gson();
                     AuthenticationResponse authenticationResponse = gson.fromJson(response.body().string(), new TypeToken<AuthenticationResponse>() {}.getType());
-                    User user = new User(authenticationResponse);
+                    User user = new User(authenticationResponse, editTextPassword.getText().toString());
 
                     sharedPreferencesManager.setUser(user);
                     sharedPreferencesManager.setToken(authenticationResponse.getToken());
                     runOnUiThread(new Runnable() {
                         @Override public void run() {
                             Toast.makeText(context, R.string.login_successful, Toast.LENGTH_SHORT).show();
+                            sharedPreferencesManager.setLogged(true);
                             getOnBackPressedDispatcher().onBackPressed(); }
                     });
                 }

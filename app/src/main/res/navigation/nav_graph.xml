@@ -8,8 +8,4 @@
         android:id="@+id/mainActivity"
         android:name="com.example.memeapp.ui.main.MainActivity"
         android:label="MainActivity" />
-    <fragment
-        android:id="@+id/dynamicFragment"
-        android:name="com.example.memeapp.ui.main.DynamicFragment"
-        android:label="DynamicFragment" />
 </navigation>

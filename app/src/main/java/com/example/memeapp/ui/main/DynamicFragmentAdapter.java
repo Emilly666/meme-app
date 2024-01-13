@@ -16,15 +16,12 @@ public class DynamicFragmentAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Fragment frag;
-        if(position == 0){
-            frag = MainFragment.newInstance();
-        }else{
-            Bundle b = new Bundle();
-            b.putInt("position", position);
-            frag = DynamicFragment.newInstance();
-            frag.setArguments(b);
-        }
+        Fragment frag = MainFragment.newInstance();
+        Bundle b = new Bundle();
+        b.putInt("position", position);
+
+        frag.setArguments(b);
+
         return frag;
     }
 

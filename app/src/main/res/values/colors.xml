@@ -20,5 +20,6 @@
     <color name="white_2">#f5fff5</color>
 
     <color name="gray_1">#d1d1d1</color>
+    <color name="transparent">#00ffffff</color>
 
 </resources>

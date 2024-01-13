@@ -10,11 +10,11 @@ public class User {
     private String password;
     private String pictureURL;
 
-    public User(AuthenticationResponse response){
+    public User(AuthenticationResponse response, String password){
         id = response.getUser_id();
         nickname = response.getNickname();
         email = response.getEmail();
-        password = response.getPassword();
+        this.password = password;
         pictureURL = response.getPictureURL();
     }
     public User(){

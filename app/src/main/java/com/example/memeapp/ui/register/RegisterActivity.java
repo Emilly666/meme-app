@@ -101,8 +101,6 @@ public class RegisterActivity extends AppCompatActivity {
                         authenticationResponse = gson.fromJson(responseBody, new TypeToken<AuthenticationResponse>() {}.getType());
 
                     }catch (Exception e){
-                        Log.d("ddd",e.toString());
-                        Log.d("ddd",responseBody);
                         if(responseBody.equals("Email already used")){
                             runOnUiThread(new Runnable() {
                                 @Override public void run() { textViewRegisterError.setText(R.string.email_taken); }
@@ -110,13 +108,14 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                         return;
                     }
-                    User user = new User(authenticationResponse);
+                    User user = new User(authenticationResponse, editTextPassword.getText().toString());
 
                     sharedPreferencesManager.setUser(user);
                     sharedPreferencesManager.setToken(authenticationResponse.getToken());
                     runOnUiThread(new Runnable() {
                         @Override public void run() {
                             Toast.makeText(context, R.string.register_successful, Toast.LENGTH_SHORT).show();
+                            sharedPreferencesManager.setLogged(true);
                             Intent intent = new Intent();
                             setResult(1, intent);
                             finish();
@@ -144,7 +143,7 @@ public class RegisterActivity extends AppCompatActivity {
         if (editTextPassword.length() == 0) {
             editTextPassword.setError(getResources().getString(R.string.field_required));
             flag = false;
-        } else if (editTextPassword.length() < 3) { // TODO change back to 8
+        } else if (editTextPassword.length() < 8) {
             editTextPassword.setError(getResources().getString(R.string.password_minimum));
             flag = false;
         } else if(!isValidPassword(editTextPassword.getText().toString())){

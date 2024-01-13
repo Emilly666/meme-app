@@ -47,6 +47,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.example.memeapp.R;
 import com.example.memeapp.SharedPreferencesManager;
 import com.example.memeapp.model.meme.Meme;
+import com.example.memeapp.ui.addmeme.AddMeme;
 import com.example.memeapp.ui.profile.UserProfile;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -135,7 +136,6 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             likesDisplay = itemView.findViewById(R.id.likesDisplay);
             buttonComments = itemView.findViewById(R.id.buttonComments);
             tagsLayout = itemView.findViewById(R.id.tagsLayout);
-
         }
     }
 
@@ -190,6 +190,20 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             );
             params.setMargins(10, 10, 10, 10);
             button.setLayoutParams(params);
+            int finalI = i;
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(!sharedPreferencesManager.checkUserSavedTags(memeList.get(position).getTags().get(finalI))){
+                        sharedPreferencesManager.addUserSavedTags(memeList.get(position).getTags().get(finalI));
+                        myActivity.finish();
+                        myActivity.overridePendingTransition(0, 0);
+                        Intent myIntent = new Intent(myActivity, myActivity.getClass());
+                        startActivity(context, myIntent, null);
+                        myActivity.overridePendingTransition(0, 0);
+                    }
+                }
+            });
             viewHolder.tagsLayout.addView(button);
         }
         viewHolder.authorTextView.setOnClickListener(new View.OnClickListener() {

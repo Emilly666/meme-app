@@ -30,4 +30,6 @@
     <string name="email_invalid">Proszę podać prawidłowy adres e-mail</string>
     <string name="password_not_matching">Hasła nie są takie same</string>
     <string name="password_weak">Hasło jest za słabe</string>
+    <string name="close">Zamknij</string>
+    <string name="preview">Podgląd mema:</string>
 </resources>
