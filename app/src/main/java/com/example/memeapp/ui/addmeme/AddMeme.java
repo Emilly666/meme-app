@@ -27,11 +27,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.memeapp.R;
 import com.example.memeapp.SharedPreferencesManager;
-import com.example.memeapp.dto.AuthenticationResponse;
-import com.example.memeapp.model.user.User;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;

@@ -2,15 +2,18 @@ package com.example.memeapp.ui.main;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.os.LocaleListCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.memeapp.R;
@@ -21,7 +24,6 @@ import com.example.memeapp.model.user.User;
 import com.example.memeapp.ui.addmeme.AddMeme;
 import com.example.memeapp.ui.login.LoginActivity;
 import com.example.memeapp.ui.profile.UserProfile;
-import com.example.memeapp.ui.register.RegisterActivity;
 import com.example.memeapp.ui.settings.SettingsActivity;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.tabs.TabLayout;
@@ -31,6 +33,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import okhttp3.Call;

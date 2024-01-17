@@ -80,25 +80,30 @@
         app:layout_constraintTop_toBottomOf="@+id/scrollView2">
 
         <Button
+            android:background="@drawable/button_background"
             android:id="@+id/buttonLikes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:icon="@drawable/baseline_arrow_upward_24" />
+            app:icon="@drawable/baseline_arrow_upward_24"
+            />
 
-        <Button
+        <TextView
             android:id="@+id/likesDisplay"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/placeholder_likes" />
+            android:text="@string/placeholder_likes"
+            android:gravity="center"/>
 
         <Button
+            android:background="@drawable/button_background"
+            android:backgroundTint="?attr/colorOnPrimary"
             android:id="@+id/buttonDislikes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:icon="@drawable/baseline_arrow_downward_24" />
+            app:icon="@drawable/baseline_arrow_downward_24"/>
 
         <Button
             android:id="@+id/buttonComments"

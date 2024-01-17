@@ -42,5 +42,7 @@
     <string name="add_meme">Add meme</string>
     <string name="title">Title</string>
     <string name="add_tag">Add tag</string>
+    <string name="language">Language</string>
+    <string name="logout">Logout</string>
 
 </resources>

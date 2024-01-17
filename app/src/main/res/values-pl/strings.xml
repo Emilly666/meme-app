@@ -32,4 +32,10 @@
     <string name="password_weak">Hasło jest za słabe</string>
     <string name="close">Zamknij</string>
     <string name="preview">Podgląd mema:</string>
+    <string name="choose_image">Wybierz obraz</string>
+    <string name="add_meme">Dodaj Mema</string>
+    <string name="title">Tytuł</string>
+    <string name="add_tag">Dodaj tag</string>
+    <string name="language">Język</string>
+    <string name="logout">Wyloguj</string>
 </resources>

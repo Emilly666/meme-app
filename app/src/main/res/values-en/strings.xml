@@ -32,5 +32,11 @@
     <string name="password_weak">Password is too weak</string>
     <string name="close">Close</string>
     <string name="preview">Meme preview:</string>
+    <string name="choose_image">Choose image</string>
+    <string name="add_meme">Add meme</string>
+    <string name="title">Title</string>
+    <string name="add_tag">Add tag</string>
+    <string name="language">Language</string>
+    <string name="logout">Logout</string>
 
 </resources>

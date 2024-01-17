@@ -60,7 +60,6 @@ public class SharedPreferencesManager {
         editor.apply();
     }
     public boolean checkUserSavedTags(Tag tag){
-        SharedPreferences.Editor editor = sp.edit();
         Gson gson = new Gson();
         String jsonText = sp.getString("tags", gson.toJson(userSavedTags));
         List<Tag> tags = gson.fromJson(jsonText, new TypeToken<List<Tag>>() {}.getType());
@@ -104,5 +103,13 @@ public class SharedPreferencesManager {
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean("logged", logged);
         editor.apply();
+    }
+    public void setLanguage(int language) {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt("language", language);
+        editor.apply();
+    }
+    public int getLanguage(){
+        return sp.getInt("language", 0);
     }
 }

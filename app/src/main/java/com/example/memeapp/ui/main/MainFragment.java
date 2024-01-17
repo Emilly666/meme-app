@@ -43,17 +43,10 @@ import com.example.memeapp.model.tag.Tag;
 import com.example.memeapp.model.user.User;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -210,12 +203,6 @@ public class MainFragment extends Fragment {
         if(memesArrayList.size() > 0){
             lastMeme_Id = memesArrayList.get(memesArrayList.size() -1).getId();
         }
-        String json = "{ " +
-                "\"lastMeme_id\" : \"" + lastMeme_Id + "\", " +
-                "\"tag_id\" : \"" + tag.getId() +"\", " +
-                "\"count\" : \"" + MEME_BATCH +"\" " +
-                "}";
-        RequestBody body = RequestBody.create(json, JSON);
         User user;
         if(sharedPreferencesManager.getUser() == null){
             user = new User();
@@ -223,8 +210,16 @@ public class MainFragment extends Fragment {
         else{
             user = sharedPreferencesManager.getUser();
         }
+        String json = "{ " +
+                "\"lastMeme_id\" : \"" + lastMeme_Id + "\", " +
+                "\"tag_id\" : \"" + tag.getId() +"\", " +
+                "\"count\" : \"" + MEME_BATCH +"\", " +
+                "\"user_id\" : \"" + user.getId() +"\" " +
+                "}";
+        RequestBody body = RequestBody.create(json, JSON);
+
         Request request = new Request.Builder()
-                .url(sharedPreferencesManager.getServerAddress() + "meme/get/" + user.getId())
+                .url(sharedPreferencesManager.getServerAddress() + "meme/get" )
                 .post(body)
                 .build();
         client.newCall(request).enqueue(new Callback() {

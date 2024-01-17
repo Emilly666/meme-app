@@ -5,69 +5,33 @@ import static androidx.core.content.ContextCompat.startActivity;
 
 
 import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.util.Log;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.example.memeapp.R;
 import com.example.memeapp.SharedPreferencesManager;
 import com.example.memeapp.model.meme.Meme;
-import com.example.memeapp.ui.addmeme.AddMeme;
 import com.example.memeapp.ui.profile.UserProfile;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Objects;
 
 public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -121,9 +85,9 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         ImageView imageViewMeme;
-        TextView authorTextView, dateTextView, titleTextView;
+        TextView authorTextView, dateTextView, titleTextView, likesDisplay;
         LinearLayout tagsLayout;
-        Button buttonLikes, buttonDislikes, likesDisplay, buttonComments;
+        Button buttonLikes, buttonDislikes, buttonComments;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -159,10 +123,10 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         viewHolder.likesDisplay.setText(String.valueOf(memeList.get(position).getTotal_likes()));
         sharedPreferencesManager =SharedPreferencesManager.getInstance(context);
         if (memeList.get(position).getReactionValue() == 1) { // liked
-
+            viewHolder.buttonLikes.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.pepe_blue_1)));
         }
         else if (memeList.get(position).getReactionValue() == -1) { // disliked
-
+            viewHolder.buttonDislikes.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.pepe_blue_1)));
         }
         String imageUrl;
         if(memeList.get(position).getContent_type().equals("image/gif")){
@@ -183,7 +147,7 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         for(int i = 0; i < memeList.get(position).getTags().size(); i++){
             Button button = new Button(context);
             button.setText(memeList.get(position).getTags().get(i).getName());
-            button.setBackground(getDrawable(context, R.drawable.tag_background));
+            button.setBackground(getDrawable(context, R.drawable.button_background));
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
