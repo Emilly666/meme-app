@@ -24,6 +24,8 @@ import com.bumptech.glide.Glide;
 import com.example.memeapp.R;
 import com.example.memeapp.SharedPreferencesManager;
 import com.example.memeapp.model.meme.Meme;
+import com.example.memeapp.ui.comment.CommentActivity;
+import com.example.memeapp.ui.login.LoginActivity;
 import com.example.memeapp.ui.profile.UserProfile;
 
 import java.io.IOException;
@@ -188,6 +190,14 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             @Override
             public void onClick(View view) {
 
+            }
+        });
+        viewHolder.buttonComments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent myIntent = new Intent(context, CommentActivity.class);
+                myIntent.putExtra("meme_id", memeList.get(position).getId());
+                startActivity(context, myIntent, null);
             }
         });
     }

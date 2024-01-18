@@ -44,5 +44,13 @@
     <string name="add_tag">Add tag</string>
     <string name="language">Language</string>
     <string name="logout">Logout</string>
+    <string name="add_comment">Add comment</string>
+    <string name="user_s_statistics">User\'s statistics:</string>
+    <string name="total_likes_given">Total likes given:</string>
+    <string name="total_dislikes_given">Total dislikes given:</string>
+    <string name="total_likes_received">Total likes received:</string>
+    <string name="total_dislikes_received">Total dislikes received:</string>
+    <string name="total_comments_made">Total comments made:</string>
+    <string name="total_memes_uploaded">Total memes uploaded:</string>
 
 </resources>
